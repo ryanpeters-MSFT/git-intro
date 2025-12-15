@@ -28,18 +28,18 @@ Every Git repository has three distinct areas:
 │   WORKING DIRECTORY         STAGING AREA            REPOSITORY             │
 │   (Working Tree)            (Index)                 (.git directory)       │
 │                                                                            │
-│   ┌──────────────┐         ┌──────────────┐        ┌──────────────┐       │
-│   │              │         │              │        │              │       │
-│   │  Your files  │ ─────── │   Prepared   │ ────── │  Committed   │       │
-│   │  as you see  │ git add │   changes    │ commit │  snapshots   │       │
-│   │  them        │         │   (next      │        │  (history)   │       │
-│   │              │         │    commit)   │        │              │       │
-│   └──────────────┘         └──────────────┘        └──────────────┘       │
+│   ┌──────────────┐         ┌──────────────┐        ┌──────────────┐        │
+│   │              │         │              │        │              │        │
+│   │  Your files  │ ─────── │   Prepared   │ ────── │  Committed   │        │
+│   │  as you see  │ git add │   changes    │ commit │  snapshots   │        │
+│   │  them        │         │   (next      │        │  (history)   │        │
+│   │              │         │    commit)   │        │              │        │
+│   └──────────────┘         └──────────────┘        └──────────────┘        │
 │                                                                            │
-│   • Untracked files        • "Changes to be       • Permanent record      │
-│   • Modified files           committed"           • Each commit has ID    │
-│   • What you edit          • Your "shopping       • Safe and recoverable  │
-│                              cart"                                        │
+│   • Untracked files        • "Changes to be       • Permanent record       │
+│   • Modified files           committed"           • Each commit has ID     │
+│   • What you edit          • Your "shopping       • Safe and recoverable   │
+│                              cart"                                         │
 │                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -305,11 +305,11 @@ git diff
 │                        FILE LIFECYCLE IN GIT                            │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   Untracked ─────► Staged ─────► Committed                             │
+│   Untracked ─────► Staged ─────► Committed                              │
 │       │           git add      git commit                               │
 │       │              │              │                                   │
 │       │              │              ▼                                   │
-│       │              │         Unmodified ◄──┐                         │
+│       │              │         Unmodified ◄──┐                          │
 │       │              │              │        │                          │
 │       │              │         (edit file)   │                          │
 │       │              │              │        │                          │
@@ -323,7 +323,7 @@ git diff
 │       │                       git commit                                │
 │       │                                                                 │
 │       │                                                                 │
-│       └── Remove file from tracking: git rm --cached <file>            │
+│       └── Remove file from tracking: git rm --cached <file>             │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
