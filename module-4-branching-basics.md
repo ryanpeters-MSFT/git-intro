@@ -36,7 +36,7 @@ When you create a branch, Git creates a tiny file containing the hash of a commi
                             │
                             ▼
         ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │
+  │ A │───>│ B │───>│ C │
         └───┘    └───┘    └───┘
 ```
 
@@ -59,7 +59,7 @@ Usually, HEAD points to a branch name (like `main`), which in turn points to a c
           │
           ▼
         ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │
+        │ A │───>│ B │───>│ C │
         └───┘    └───┘    └───┘
 ```
 
@@ -77,7 +77,7 @@ When you create a new branch, Git creates a new pointer at your current commit:
           │
           ▼
         ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │◀── feature (new branch)
+        │ A │───>│ B │───>│ C │◀── feature (new branch)
         └───┘    └───┘    └───┘
 ```
 
@@ -92,7 +92,7 @@ When you switch to `feature`, HEAD moves:
                           │
                           ▼
         ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │◀── feature
+        │ A │───>│ B │───>│ C │◀── feature
         └───┘    └───┘    └───┘       ▲
                                       │
                                     HEAD
@@ -107,11 +107,11 @@ When you commit on `feature`, only `feature` moves forward:
                           │
                           ▼
         ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │
+        │ A │───>│ B │───>│ C │
         └───┘    └───┘    └───┘
                             │
                             │    ┌───┐    ┌───┐
-                            └───▶│ D │───▶│ E │◀── feature
+                            └───>│ D │───>│ E │◀── feature
                                  └───┘    └───┘       ▲
                                                       │
                                                     HEAD
@@ -131,11 +131,11 @@ When you merge `feature` into `main`, Git creates a merge commit:
                                         │
                                         ▼
         ┌───┐    ┌───┐    ┌───┐      ┌───┐
-        │ A │───▶│ B │───▶│ C │─────▶│ F │◀── HEAD
+        │ A │───>│ B │───>│ C │─────>│ F │◀── HEAD
         └───┘    └───┘    └───┘      └───┘
                             │          ▲
                             │    ┌───┐ │  ┌───┐
-                            └───▶│ D │─┴─▶│ E │◀── feature
+                            └───>│ D │─┴─>│ E │◀── feature
                                  └───┘    └───┘
 ```
 
@@ -339,7 +339,7 @@ When the target branch hasn't changed since you branched off, Git just moves the
                           │
                           ▼
         ┌───┐    ┌───┐    ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │───▶│ D │───▶│ E │◀── feature
+        │ A │───>│ B │───>│ C │───>│ D │───>│ E │◀── feature
         └───┘    └───┘    └───┘    └───┘    └───┘       ▲
                                                         │
                                                       HEAD
@@ -351,7 +351,7 @@ When the target branch hasn't changed since you branched off, Git just moves the
                                                     │
                                                     ▼
         ┌───┐    ┌───┐    ┌───┐    ┌───┐    ┌───┐
-        │ A │───▶│ B │───▶│ C │───▶│ D │───▶│ E │◀── feature
+        │ A │───>│ B │───>│ C │───>│ D │───>│ E │◀── feature
         └───┘    └───┘    └───┘    └───┘    └───┘       ▲
                                                         │
                                                       HEAD
@@ -369,11 +369,11 @@ When both branches have new commits, Git creates a merge commit:
                             │
                             ▼
                           ┌───┐
-             ┌───────────▶│ F │
+             ┌───────────>│ F │
              │            └───┘
         ┌───┐    ┌───┐    
-        │ A │───▶│ B │───▶┌───┐    ┌───┐
-        └───┘    └───┘    │ C │───▶│ D │◀── feature
+        │ A │───>│ B │───>┌───┐    ┌───┐
+        └───┘    └───┘    │ C │───>│ D │◀── feature
                           └───┘    └───┘       ▲
                                                │
                                              HEAD
@@ -385,12 +385,12 @@ When both branches have new commits, Git creates a merge commit:
                                       │
                                       ▼
                           ┌───┐    ┌───┐
-             ┌───────────▶│ F │───▶│ G │◀── HEAD (merge commit)
+             ┌───────────>│ F │───>│ G │◀── HEAD (merge commit)
              │            └───┘    └───┘
              │                       ▲
         ┌───┐    ┌───┐               │
-        │ A │───▶│ B │───▶┌───┐    ┌───┐
-        └───┘    └───┘    │ C │───▶│ D │◀── feature
+        │ A │───>│ B │───>┌───┐    ┌───┐
+        └───┘    └───┘    │ C │───>│ D │◀── feature
                           └───┘    └───┘
 ```
 
