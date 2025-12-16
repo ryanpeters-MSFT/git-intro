@@ -32,18 +32,16 @@ A **branch** is simply a pointer to a commit. That's it.
 When you create a branch, Git creates a tiny file containing the hash of a commit. When you make new commits on that branch, the pointer moves forward.
 
 ```
-                          main
-                            │
-                            ▼
-        ┌───┐    ┌───┐    ┌───┐
-  │ A │───>│ B │───>│ C │
-        └───┘    └───┘    └───┘
+        A ───── B ───── C   
+                        ▲
+                        │
+                       main
 ```
 
 In this diagram:
-- Each box is a commit (A, B, C)
+- Each letter is a commit (A, B, C)
 - `main` is a branch pointing to commit C
-- Arrows show parent relationships (C's parent is B, B's parent is A)
+- Time flows left to right (A is oldest, C is newest)
 
 ### What is HEAD?
 
@@ -52,15 +50,13 @@ In this diagram:
 Usually, HEAD points to a branch name (like `main`), which in turn points to a commit:
 
 ```
-        HEAD
-          │
-          ▼
-        main
-          │
-          ▼
-        ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │
-        └───┘    └───┘    └───┘
+        A ───── B ───── C   
+                        ▲
+                        │
+                       main
+                        ▲
+                        │
+                       HEAD
 ```
 
 When you make a new commit, both the branch pointer and HEAD move forward together.
@@ -70,15 +66,13 @@ When you make a new commit, both the branch pointer and HEAD move forward togeth
 When you create a new branch, Git creates a new pointer at your current commit:
 
 ```
-        HEAD
-          │
-          ▼
-        main
-          │
-          ▼
-        ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │◀── feature (new branch)
-        └───┘    └───┘    └───┘
+                       main
+                        │
+                        ▼
+        A ───── B ───── C   
+                        ▲
+                        │
+                     feature (new branch)
 ```
 
 Both `main` and `feature` point to the same commit. No files are copied—it's instant.
@@ -88,33 +82,29 @@ Both `main` and `feature` point to the same commit. No files are copied—it's i
 When you switch to `feature`, HEAD moves:
 
 ```
-                        main
-                          │
-                          ▼
-        ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │◀── feature
-        └───┘    └───┘    └───┘       ▲
-                                      │
-                                    HEAD
+                       main
+                        │
+                        ▼
+        A ───── B ───── C   
+                        ▲
+                        │
+                     feature ◄─── HEAD
 ```
 
 ### Making Commits on a Branch
 
-When you commit on `feature`, only `feature` moves forward:
+When you commit on `feature`, only `feature` moves forward. The branches diverge:
 
 ```
-                        main
-                          │
-                          ▼
-        ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │
-        └───┘    └───┘    └───┘
-                            │
-                            │    ┌───┐    ┌───┐
-                            └───>│ D │───>│ E │◀── feature
-                                 └───┘    └───┘       ▲
-                                                      │
-                                                    HEAD
+                       main
+                        │
+                        ▼
+        A ───── B ───── C   
+                        │
+                        └───── D ───── E
+                                       ▲
+                                       │
+                                    feature ◄─── HEAD
 ```
 
 Now:
@@ -124,22 +114,21 @@ Now:
 
 ### Merging
 
-When you merge `feature` into `main`, Git creates a merge commit:
+When you merge `feature` into `main`, Git creates a merge commit that combines both histories:
 
 ```
-                                      main
+                                       main ◄─── HEAD
                                         │
                                         ▼
-        ┌───┐    ┌───┐    ┌───┐      ┌───┐
-        │ A │───>│ B │───>│ C │─────>│ F │◀── HEAD
-        └───┘    └───┘    └───┘      └───┘
-                            │          ▲
-                            │    ┌───┐ │  ┌───┐
-                            └───>│ D │─┴─>│ E │◀── feature
-                                 └───┘    └───┘
+        A ───── B ───── C ─────────────M
+                        │             /
+                        └─── D ─── E ┘
+                                   ▲
+                                   │
+                                feature
 ```
 
-Commit F is a **merge commit** — it has two parents (C and E).
+Commit M is a **merge commit** — it has two parents (C and E), joining both lines of development.
 
 ---
 
@@ -331,70 +320,65 @@ git log --oneline --graph --all
 
 ### Fast-Forward Merge
 
-When the target branch hasn't changed since you branched off, Git just moves the pointer forward:
+When the target branch hasn't changed since you branched off, Git just moves the pointer forward. No merge commit is needed.
 
-**Before:**
+**Before (main hasn't moved since feature branched off):**
 ```
-                        main
-                          │
-                          ▼
-        ┌───┐    ┌───┐    ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │───>│ D │───>│ E │◀── feature
-        └───┘    └───┘    └───┘    └───┘    └───┘       ▲
-                                                        │
-                                                      HEAD
-```
-
-**After `git merge feature` (fast-forward):**
-```
-                                                  main
-                                                    │
-                                                    ▼
-        ┌───┐    ┌───┐    ┌───┐    ┌───┐    ┌───┐
-        │ A │───>│ B │───>│ C │───>│ D │───>│ E │◀── feature
-        └───┘    └───┘    └───┘    └───┘    └───┘       ▲
-                                                        │
-                                                      HEAD
-```
-
-No new commit is created—main just moves to where feature is.
-
-### Three-Way Merge
-
-When both branches have new commits, Git creates a merge commit:
-
-**Before:**
-```
-                          main
-                            │
-                            ▼
-                          ┌───┐
-             ┌───────────>│ F │
-             │            └───┘
-        ┌───┐    ┌───┐    
-        │ A │───>│ B │───>┌───┐    ┌───┐
-        └───┘    └───┘    │ C │───>│ D │◀── feature
-                          └───┘    └───┘       ▲
-                                               │
-                                             HEAD
+                       main
+                        │
+                        ▼
+        A ───── B ───── C ───── D ───── E
+                                        ▲
+                                        │
+                                     feature ◄─── HEAD
 ```
 
 **After `git switch main` then `git merge feature`:**
 ```
-                                    main
-                                      │
-                                      ▼
-                          ┌───┐    ┌───┐
-             ┌───────────>│ F │───>│ G │◀── HEAD (merge commit)
-             │            └───┘    └───┘
-             │                       ▲
-        ┌───┐    ┌───┐               │
-        │ A │───>│ B │───>┌───┐    ┌───┐
-        └───┘    └───┘    │ C │───>│ D │◀── feature
-                          └───┘    └───┘
+                                       main ◄─── HEAD
+                                        │
+                                        ▼
+        A ───── B ───── C ───── D ───── E
+                                        ▲
+                                        │
+                                     feature
 ```
 
-Commit G has two parents: F and D.
+No new commit is created—main just moves forward to where feature is. This is called a "fast-forward" because main simply fast-forwards along the existing commits.
+
+### Three-Way Merge
+
+When both branches have new commits since they diverged, Git creates a merge commit:
+
+**Before (both branches have new commits):**
+```
+                                main ◄─── HEAD
+                                 │
+                                 ▼
+        A ───── B ───── C ───── F
+                        │
+                        └───── D ───── E
+                                       ▲
+                                       │
+                                    feature
+```
+
+Here, main and feature diverged at commit C. Main has commit F, feature has D and E.
+
+**After `git merge feature`:**
+```
+                                              main ◄─── HEAD
+                                               │
+                                               ▼
+        A ───── B ───── C ───── F ─────────── G
+                        │                    /
+                        └───── D ───── E ───┘
+                                       ▲
+                                       │
+                                    feature
+```
+
+Commit G is a **merge commit** with two parents: F (from main) and E (from feature). This joins both lines of development together.
 
 ---
 
