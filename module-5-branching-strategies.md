@@ -43,13 +43,14 @@ Think of it as "traffic rules" for your repository.
 Everyone commits to a single main branch (the "trunk") very frequently—often multiple times per day.
 
 ```
-main    ●────●────●────●────●────●────●────●────●────●
-              │    │              │         │    │
-              └─●──┘              └──●──────┘    └─●──┘
-                │                    │              │
-            (feature,            (feature,      (feature,
-            hours-1 day)         hours-1 day)   hours-1 day)
+main    A ─── B ─── C ─── D ─── E ─── F ─── G ─── H ─── I ─── J
+              │     │           │           │     │
+              └──●──┘           └─────●─────┘     └──●──┘
+              feature-1           feature-2       feature-3
+            (merged same day)   (merged next day)  (hours)
 ```
+
+All features branch from main and merge back quickly. The main branch is the single source of truth.
 
 **Key characteristics:**
 - Feature branches live hours to 1-2 days maximum
@@ -99,14 +100,14 @@ main    ●────●────●────●────●───
 A lightweight, branch-based workflow centered on pull requests.
 
 ```
-main    ●────────●─────────────────●────────────●──────────●
-         \      /                 /              \        /
-          ●────●                 /                ●──────●
-          feature-a             /                 feature-c
-                               /
-                    ●────●────●
-                    feature-b
+                         (feature-a)        (feature-b)              (feature-c)
+                              │                  │                        │
+                         ┌─ a1 ─┐          ┌─ b1 ── b2 ─┐          ┌─ c1 ── c2 ─┐
+                        /        \        /              \        /              \
+main        A ─────────────────── B ──────────────────── C ──────────────────── D
 ```
+
+Each feature branches from main, gets developed with one or more commits, then merges back via pull request. Features can be developed in parallel.
 
 **Key characteristics:**
 - Main is always deployable
@@ -156,21 +157,25 @@ main    ●────────●──────────────
 A structured branching model with specific branches for different purposes.
 
 ```
-main        ●───────────────────────────────────●───────────────────●
-             \                                 / \                 /
-              \                               /   \               /
-hotfix         \                             /     ●─────────────●
-                \                           /       hotfix-1.0.1
-                 \                         /
-release           \                 ●─────●
-                   \               /       \
-                    \             /         \
-develop              ●───●───────●───────────●───●───●───●
-                      \     /           \         /
-                       \   /             \       /
-feature                 ●─●               ●─────●
-                      feature-a         feature-b
+main       A ─────────────────────────────────────────── M1 ────────────────── M2
+            \                                           /                     /
+             \                              ┌── r1 ── r2                     /
+              \                            /            \                   /
+               \                          /              \      ┌─ h1 ── h2 
+                \                        /                \    /
+develop          B ── C ─────── D ───── E ─────────────── F ─────── G ── H ── I
+                      │        /                              │             /
+                      │       /                               │            /
+feature              f1 ── f2                                f3 ──────── f4
+                    (feature-a)                              (feature-b)
 ```
+
+Reading this diagram:
+- **main** (top): Stays stable, only updated by release and hotfix merges
+- **develop** (middle): Integration branch where all features come together
+- **feature branches** (bottom): Branch from develop (at C, F), merge back to develop
+- **release branch** (r1-r2): Branches from develop, merges to BOTH main AND develop
+- **hotfix branch** (h1-h2): Branches from main (after M1), merges to BOTH main AND develop
 
 **Branch purposes:**
 - **main**: Production code only, tagged with versions
